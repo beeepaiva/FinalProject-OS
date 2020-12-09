@@ -49,9 +49,19 @@ Source: https://engineering.purdue.edu/ece264/17au/hw/HW15
 int main() {
 
     FILE *file1, *file2;
+    unsigned int storage, data_size;
+
     file1 = fopen("test.bmp", "rb"); // rb, read binary mode
+    if (file1 == NULL) {
+        printf("File not found!\n");
+        return -1;
+    }
+
     file2 = fopen("test.txt", "r");
-    unsigned int storage;
+    if (file2 == NULL) {
+        printf("File not found!\n");
+        return -1;
+    }
 
     typedef struct {
         unsigned int img_size;
@@ -74,15 +84,25 @@ int main() {
     fread(&bmp.img_size, 4, 1, file1);
     bmp.img_size = bmp.img_size - HEADER_SIZE;
 
-    storage = bmp.img_size / 8 // This is the available storage space in bytes
+    storage = bmp.img_size / 8; // This is the available storage space in bytes
 
     /* 
     2. Check the size of the file to be written onto the bitmap
+
+    ftell: returns the current file position of the given stream
     */
+
+    fseek(file2, 0, SEEK_END);
+    data_size = ftell(file2);
 
     /*
     3. Check if there is enough space. If there isn't, prompt the user that there is no space available
     */
+
+   if (data_size > storage) {
+       printf("There is no available space in the storage");
+       return -1;
+   }
 
     /* 
     4. Otherwise, insert data in the least signicant bit (LSB) of each byte
