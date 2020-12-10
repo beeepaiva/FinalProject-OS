@@ -69,14 +69,16 @@ int main() {
         unsigned char* data;
     } BMP;
 
-    /* 
-    1. Check the available storage space in the bitmap 
+    /******************************************************
+     * 
+     *  1. Check the available storage space in the bitmap 
+     * 
+     ******************************************************/
     
-    fread:
-        - args: ptr destination, size in bytes, nr of elements of said size, input)
-    fseek: sets file position to a given offset in bytes
-        - args: input, offset, whence (the position from which the offset is applied, SEEK_SET, SEEK_CUR or SEEK_END) 
-    */
+    // fread:
+    //     - args: ptr destination, size in bytes, nr of elements of said size, input)
+    // fseek: sets file position to a given offset in bytes
+    //     - args: input, offset, whence (the position from which the offset is applied, SEEK_SET, SEEK_CUR or SEEK_END) 
 
     BMP bmp;
 
@@ -86,27 +88,48 @@ int main() {
 
     storage = bmp.img_size / 8; // This is the available storage space in bytes
 
-    /* 
-    2. Check the size of the file to be written onto the bitmap
+    /*  
+        Validation
 
-    ftell: returns the current file position of the given stream
+        Doing a hex dump of the base image through 'xxd img.bmp | vim -' we get:
+
+        00000000: 424d d2b4 d401 0000 0000 8a00 0000 7c00  BM............|.
+    
+        This is the first line in the bitmap. The hex sequence 'd2b4 d401' corresponds to the file size (uint32_t).
+        The bitmap is formatted as little endian. Thus the sequence is initially converted to big endian and after that to decimal.
+        The following size in bytes should be read: 30.717.138.
+
+        The image size should be equal to the value above minus the header, thus: 30.717.084.
+
+        This should result in a storage size of 3.839.635 bytes.
+
     */
+
+    printf("Storage capacity (bytes): %d\n", storage); // 3.839.635 bytes
+
+
+     /********************************************************************
+     * 
+     *  2. Check if there is enough space available for storing the input 
+     * 
+     *********************************************************************/ 
+
+    // ftell: returns the current file position of the given stream
 
     fseek(file_in, 0, SEEK_END);
     data_size = ftell(file_in);
-
-    /*
-    3. Check if there is enough space. If there isn't, prompt the user that there is no space available
-    */
+    printf("Input file size (bytes): %d\n", data_size);
 
     if (data_size > storage) {
-        printf("There is no available space in the storage");
+        printf("There is no available space");
         return -1;
     }
 
-    /* 
-    4. Otherwise, insert data in the least signicant bit (LSB) of each byte
-    */
+    /********************************************************************
+     * 
+     *  3. Insert data in the least signicant bit (LSB) of each byte 
+     * 
+     *********************************************************************/ 
 
     // void encrypt(FILE *base, FILE *in, FILE *out) {
 
