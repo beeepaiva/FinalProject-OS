@@ -46,6 +46,9 @@ Source: https://engineering.purdue.edu/ece264/17au/hw/HW15
 #define SIZE_OFFSET 2
 #define BITS_PER_PIXEL_OFFSET 28
 
+void encode(FILE *base, FILE *in, FILE *out);
+int decode(FILE *out, int data_size);
+
 int main() {
 
     FILE *file_base, *file_in, *file_out;
@@ -57,7 +60,7 @@ int main() {
         return -1;
     }
 
-    file_in = fopen("input.txt", "r"); // Open file for update (both input and output)
+    file_in = fopen("input.txt", "rb"); // Open file for update (both input and output)
     if (file_in == NULL) {
         printf("File not found!\n");
         return -1;
@@ -111,7 +114,7 @@ int main() {
 
     */
 
-    printf("Storage capacity (bytes): %d\n", storage); // 3.839.635 bytes
+    printf("Storage capacity (bytes): %d [bytes]\n", storage); // 3.839.635 bytes
 
 
      /********************************************************************
@@ -124,7 +127,7 @@ int main() {
 
     fseek(file_in, 0, SEEK_END);
     data_size = ftell(file_in);
-    printf("Input file size (bytes): %d\n", data_size);
+    printf("Input file size: %d [bytes]\n", data_size);
 
     if (data_size > storage) {
         printf("There is no available space");
@@ -139,51 +142,107 @@ int main() {
 
     // The out file is a control copy of the base file used for the encoding
     // Write the input file onto the out file, bit by bit 
-    void encode(FILE *base, FILE *in, FILE *out) {
+    
+    encode(file_base, file_in, file_out);
+    decode(file_out, data_size);
 
-        // Copy the HEADER from the base file to the ouput file
-        // fgetc: gets the next unsigned char and advances the position indicator for the stream
-        // fputc: writes an unsigned char to the specified stream and advances the position indicator for the stream
-        rewind(base);
-        unsigned char copy;
-        for (int i = 0; i < HEADER_SIZE; i++) {
-            copy = fgetc(base);
-            fputc(copy, out);
-        }
+    fclose(file_base);
+    fclose(file_in);
+    fclose(file_out);
+}
 
-        unsigned char byte_in;
-        unsigned char byte_base;
-        unsigned char bit_in;
-        unsigned char bit_base;
+void encode(FILE *base, FILE *in, FILE *out) {
 
-        rewind(in);
-        while (!feof(in)) {
-            byte_in = fgetc(in);
+    // Copy the HEADER from the base file to the ouput file
+    // fgetc: gets the next unsigned char and advances the position indicator for the stream
+    // fputc: writes an unsigned char to the specified stream and advances the position indicator for the stream
+    rewind(base);
+    unsigned char copy;
+    for (int i = 0; i < HEADER_SIZE; i++) {
+        copy = fgetc(base);
+        fputc(copy, out);
+    }
 
-            // For each bit in the current byte from the input file
-            for (int i = 0; i < 8; i++) {
-                bit_in = (byte_in >> i) & 0x1;
+    unsigned char byte_in;
+    unsigned char byte_base;
+    unsigned char bit_in;
+    unsigned char bit_base;
 
-                // Get a byte from the base file
-                byte_base = fgetc(base);
-                bit_base = (byte_base >> 7) & 0x1;
+    rewind(in);
+    while (!feof(in)) {
+        byte_in = fgetc(in);
 
-                // Invert the lsb if necessary
-                if (bit_in != bit_base) {
-                    byte_base = byte_base ^ 1; // XOR
-                }
+        // For each bit in the current byte from the input file
+        for (int i = 7; i >= 0; i--) {
+            bit_in = (byte_in >> i) & 0x1;
 
-                // Write the encoded byte to the output file
-                fputc(byte_base, out);
+            // Get the lsb of the current base byte
+            byte_base = fgetc(base);
+            bit_base = byte_base & 0x1;
+
+            // Invert the lsb if necessary
+            if (bit_in != bit_base) {
+                byte_base = byte_base ^ 0x1; // XOR
             }
-        }
 
-        // Write the leftover unencoded data from the base file to the output file
-        while (!feof(base)) {
-            copy = fgetc(base);
-            fputc(copy, out);
+            // Write the encoded byte to the output file
+            fputc(byte_base, out);
         }
     }
 
-    encode(file_base, file_in, file_out);
+    // Write the leftover unencoded data from the base file to the output file
+    while (!feof(base)) {
+        copy = fgetc(base);
+        fputc(copy, out);
+    }
+}
+
+int decode(FILE *base, int data_size) {
+
+    FILE *file_out;
+
+    file_out = fopen("output.txt", "wb+"); // Create binary and open for update (both input and output)
+    if (file_out == NULL) {
+        printf("File could not be created!\n");
+        return -1;
+    }
+
+    unsigned char byte_data = '\0';
+    unsigned char byte_base;
+    unsigned char bit_base;
+    unsigned char output[data_size];
+
+    // Set the out file to the starting reading position (after the HEADER)
+    fseek(base, HEADER_SIZE, SEEK_SET);
+    int bit_shift = 0;
+    for (int i = 0; i < data_size * 8; i++) {
+
+        // Get the last bit in the current byte
+        byte_base = fgetc(base);
+        bit_base = byte_base & 0x1;
+        
+        // Write the new bit to the current data byte and left shift
+        byte_data = (byte_data << bit_shift) | bit_base;
+        
+        // Increment the shift
+        bit_shift++;
+
+        // Check if a byte has been completed. If so, reset byte_data and bit_shift
+        if (bit_shift == 8) {
+            output[i % 8] = byte_data;
+            printf("%d\n", byte_data);
+            fputc(byte_data, file_out);
+
+            // Reset
+            bit_shift = 0;
+            byte_data = '\0';
+        } 
+    }
+
+    // for (int i = 0; i < data_size; i++)
+    //     printf("%c", output[i]);
+
+    fclose(file_out);
+    return 0;
+
 }
