@@ -7,6 +7,8 @@
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <pthread.h>
 
 static const char *filepath = "/file";
 static const char *filename = "file";
@@ -28,7 +30,7 @@ static int getattr_callback(const char *path, struct stat *stbuf) {
 				      return 0;
 				        }
 
-	        return 0;
+	        return -ENOENT;
 }
 
 static int readdir_callback(const char *path, void *buf, fuse_fill_dir_t filler,
@@ -66,7 +68,7 @@ static int read_callback(const char *path, char *buf, size_t size, off_t offset,
 				      return size;
 				        }
 
-	    return 0;
+	    return -ENOENT;
 }
 
 static struct fuse_operations fuse_example_operations = {
