@@ -133,7 +133,7 @@ int main() {
 
     /****************************************************************
      * 
-     *  3. Insert data in the least signicant bit (LSB) of each byte 
+     *  3. Insert data in the least significant bit (LSB) of each byte 
      * 
      ****************************************************************/ 
 
@@ -151,17 +151,39 @@ int main() {
             fputc(copy, out);
         }
 
-        unsigned char byte;
-        bool bit[8];
+        unsigned char byte_in;
+        unsigned char byte_base;
+        unsigned char bit_in;
+        unsigned char bit_base;
 
-        for (int i = 0; i < data_size; i++) {
-            fread(&byte, 1, 1, in)
-            // For each bit
-            for (int j = 0; j < 8; j++) {
-                bit[j] = ((byte >> i) & 0x01);
+        rewind(in);
+        while (!feof(in)) {
+            byte_in = fgetc(in);
+
+            // For each bit in the current byte from the input file
+            for (int i = 0; i < 8; i++) {
+                bit_in = (byte_in >> i) & 0x1;
+
+                // Get a byte from the base file
+                byte_base = fgetc(base);
+                bit_base = (byte_base >> 7) & 0x1;
+
+                // Invert the lsb if necessary
+                if (bit_in != bit_base) {
+                    byte_base = byte_base ^ 1; // XOR
+                }
+
+                // Write the encoded byte to the output file
+                fputc(byte_base, out);
             }
+        }
+
+        // Write the leftover unencoded data from the base file to the output file
+        while (!feof(base)) {
+            copy = fgetc(base);
+            fputc(copy, out);
         }
     }
 
-    // encode(file_base, file_in, file_out);
+    encode(file_base, file_in, file_out);
 }
