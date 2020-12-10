@@ -54,19 +54,19 @@ int main() {
     FILE *file_base, *file_in, *file_out;
     unsigned int storage, data_size;
 
-    file_base = fopen("base.bmp", "rb+"); // rb, read binary mode
+    file_base = fopen("base.bmp", "rb"); // Open file: 'rb', read in binary mode (input operations only)
     if (file_base == NULL) {
         printf("File not found!\n");
         return -1;
     }
 
-    file_in = fopen("input.txt", "rb"); // Open file for update (both input and output)
+    file_in = fopen("input.txt", "r"); // Open file: 'r', read in text mode (input operations only)
     if (file_in == NULL) {
         printf("File not found!\n");
         return -1;
     }
 
-    file_out = fopen("output.bmp", "wb+"); // Create binary and open for update (both input and output)
+    file_out = fopen("output.bmp", "wb+"); // Create binary file: 'wb+', write in binary mode + (input and output operations allowed)
     if (file_out == NULL) {
         printf("File could not be created!\n");
         return -1;
@@ -144,11 +144,21 @@ int main() {
     // Write the input file onto the out file, bit by bit 
     
     encode(file_base, file_in, file_out);
+
+    /*************************
+     * 
+     *  4. Decode the message 
+     * 
+     *************************/ 
+
     decode(file_out, data_size);
 
+    // Housekeeping
     fclose(file_base);
     fclose(file_in);
     fclose(file_out);
+
+    return 0;
 }
 
 void encode(FILE *base, FILE *in, FILE *out) {
@@ -201,7 +211,7 @@ int decode(FILE *base, int data_size) {
 
     FILE *file_out;
 
-    file_out = fopen("output.txt", "wb+"); // Create binary and open for update (both input and output)
+    file_out = fopen("output.txt", "w"); // Create text file: 'w', write in text mode (output operations only)
     if (file_out == NULL) {
         printf("File could not be created!\n");
         return -1;
@@ -244,5 +254,4 @@ int decode(FILE *base, int data_size) {
 
     fclose(file_out);
     return 0;
-
 }
