@@ -209,10 +209,10 @@ void encode(FILE *base, FILE *in, FILE *out) {
 
 int decode(FILE *base, int data_size) {
 
-    FILE *file_out;
+    FILE *output;
 
-    file_out = fopen("output.txt", "w"); // Create text file: 'w', write in text mode (output operations only)
-    if (file_out == NULL) {
+    output = fopen("output.txt", "w"); // Create text file: 'w', write in text mode (output operations only)
+    if (output == NULL) {
         printf("File could not be created!\n");
         return -1;
     }
@@ -220,7 +220,6 @@ int decode(FILE *base, int data_size) {
     unsigned char byte_data = '\0';
     unsigned char byte_base;
     unsigned char bit_base;
-    unsigned char output[data_size];
 
     // Set the out file to the starting reading position (after the HEADER)
     fseek(base, HEADER_SIZE, SEEK_SET);
@@ -239,9 +238,8 @@ int decode(FILE *base, int data_size) {
 
         // Check if a byte has been completed. If so, reset byte_data and bit_shift
         if (bit_shift == 8) {
-            output[i % 8] = byte_data;
-            printf("%d\n", byte_data);
-            fputc(byte_data, file_out);
+            // Write byte_data to output file
+            fputc(byte_data, output);
 
             // Reset
             bit_shift = 0;
@@ -249,9 +247,8 @@ int decode(FILE *base, int data_size) {
         } 
     }
 
-    // for (int i = 0; i < data_size; i++)
-    //     printf("%c", output[i]);
+    // Housekeeping
+    fclose(output);
 
-    fclose(file_out);
     return 0;
 }
