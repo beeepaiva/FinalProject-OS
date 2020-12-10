@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/beatriz/FinalProject-OS",
+  "command": "/usr/bin/cc    -D_FILE_OFFSET_BITS=64 -g -Wall --pedantic -g   -o CMakeFiles/fuse.dir/fuse.c.o   -c /home/beatriz/FinalProject-OS/fuse.c",
+  "file": "/home/beatriz/FinalProject-OS/fuse.c"
+}
+]

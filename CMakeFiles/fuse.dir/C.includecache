@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/beatriz/FinalProject-OS/fuse.c
+fuse.h
+-
+stdio.h
+-
+unistd.h
+-
+sys/types.h
+-
+time.h
+-
+string.h
+-
+stdlib.h
+-
+
