@@ -51,15 +51,21 @@ int main() {
     FILE *file_base, *file_in, *file_out;
     unsigned int storage, data_size;
 
-    file_base = fopen("base.bmp", "rb"); // rb, read binary mode
+    file_base = fopen("base.bmp", "rb+"); // rb, read binary mode
     if (file_base == NULL) {
         printf("File not found!\n");
         return -1;
     }
 
-    file_in = fopen("input.txt", "r");
+    file_in = fopen("input.txt", "r"); // Open file for update (both input and output)
     if (file_in == NULL) {
         printf("File not found!\n");
+        return -1;
+    }
+
+    file_out = fopen("output.bmp", "wb+"); // Create binary and open for update (both input and output)
+    if (file_out == NULL) {
+        printf("File could not be created!\n");
         return -1;
     }
 
@@ -125,17 +131,37 @@ int main() {
         return -1;
     }
 
-    /********************************************************************
+    /****************************************************************
      * 
      *  3. Insert data in the least signicant bit (LSB) of each byte 
      * 
-     *********************************************************************/ 
+     ****************************************************************/ 
 
-    // void encrypt(FILE *base, FILE *in, FILE *out) {
+    // The out file is a control copy of the base file used for the encoding
+    // Write the input file onto the out file, bit by bit 
+    void encode(FILE *base, FILE *in, FILE *out) {
 
-    //     // Write the input file onto the base file, bit by bit 
-    //     for (int i = 0; i < data_size; i++) {
+        // Copy the HEADER from the base file to the ouput file
+        // fgetc: gets the next unsigned char and advances the position indicator for the stream
+        // fputc: writes an unsigned char to the specified stream and advances the position indicator for the stream
+        rewind(base);
+        unsigned char copy;
+        for (int i = 0; i < HEADER_SIZE; i++) {
+            copy = fgetc(base);
+            fputc(copy, out);
+        }
 
-    //     }
-    // }
+        unsigned char byte;
+        bool bit[8];
+
+        for (int i = 0; i < data_size; i++) {
+            fread(&byte, 1, 1, in)
+            // For each bit
+            for (int j = 0; j < 8; j++) {
+                bit[j] = ((byte >> i) & 0x01);
+            }
+        }
+    }
+
+    // encode(file_base, file_in, file_out);
 }
