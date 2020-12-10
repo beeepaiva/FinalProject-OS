@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <pthread.h>
+#include "main.h"
 
 static const char *filepath = "/file";
 static const char *filename = "file";
