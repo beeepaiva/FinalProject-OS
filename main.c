@@ -48,17 +48,17 @@ Source: https://engineering.purdue.edu/ece264/17au/hw/HW15
 
 int main() {
 
-    FILE *file1, *file2;
+    FILE *file_base, *file_in, *file_out;
     unsigned int storage, data_size;
 
-    file1 = fopen("test.bmp", "rb"); // rb, read binary mode
-    if (file1 == NULL) {
+    file_base = fopen("base.bmp", "rb"); // rb, read binary mode
+    if (file_base == NULL) {
         printf("File not found!\n");
         return -1;
     }
 
-    file2 = fopen("test.txt", "r");
-    if (file2 == NULL) {
+    file_in = fopen("input.txt", "r");
+    if (file_in == NULL) {
         printf("File not found!\n");
         return -1;
     }
@@ -80,8 +80,8 @@ int main() {
 
     BMP bmp;
 
-    fseek(file1, SIZE_OFFSET, SEEK_SET);
-    fread(&bmp.img_size, 4, 1, file1);
+    fseek(file_base, SIZE_OFFSET, SEEK_SET);
+    fread(&bmp.img_size, 4, 1, file_base);
     bmp.img_size = bmp.img_size - HEADER_SIZE;
 
     storage = bmp.img_size / 8; // This is the available storage space in bytes
@@ -92,19 +92,27 @@ int main() {
     ftell: returns the current file position of the given stream
     */
 
-    fseek(file2, 0, SEEK_END);
-    data_size = ftell(file2);
+    fseek(file_in, 0, SEEK_END);
+    data_size = ftell(file_in);
 
     /*
     3. Check if there is enough space. If there isn't, prompt the user that there is no space available
     */
 
-   if (data_size > storage) {
-       printf("There is no available space in the storage");
-       return -1;
-   }
+    if (data_size > storage) {
+        printf("There is no available space in the storage");
+        return -1;
+    }
 
     /* 
     4. Otherwise, insert data in the least signicant bit (LSB) of each byte
     */
+
+    // void encrypt(FILE *base, FILE *in, FILE *out) {
+
+    //     // Write the input file onto the base file, bit by bit 
+    //     for (int i = 0; i < data_size; i++) {
+
+    //     }
+    // }
 }
