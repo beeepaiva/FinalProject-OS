@@ -232,7 +232,7 @@ int decode(FILE *base, int data_size) {
         bit_base = byte_base & 0x1;
         
         // Write the new bit to the current data byte and left shift
-        byte_data = (byte_data << bit_shift) | bit_base;
+        byte_data = (byte_data << 1) | bit_base;
         
         // Increment the shift
         bit_shift++;
