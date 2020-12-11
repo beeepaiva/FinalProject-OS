@@ -4,12 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/beatriz/FinalProject-OS/fuse.c" "/home/beatriz/FinalProject-OS/CMakeFiles/fuse.dir/fuse.c.o"
+  "/home/beatriz/FinalProject-OS/code/fuse.c" "/home/beatriz/FinalProject-OS/build/CMakeFiles/fuse.dir/code/fuse.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
+  "/code"
   )
 
 # Targets to which this target links.

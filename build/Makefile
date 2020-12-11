@@ -51,7 +51,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/beatriz/FinalProject-OS
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/beatriz/FinalProject-OS
+CMAKE_BINARY_DIR = /home/beatriz/FinalProject-OS/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,8 +69,8 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/beatriz/FinalProject-OS/CMakeFiles /home/beatriz/FinalProject-OS/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/beatriz/FinalProject-OS/build/CMakeFiles /home/beatriz/FinalProject-OS/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/beatriz/FinalProject-OS/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/beatriz/FinalProject-OS/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,32 +123,32 @@ fuse/fast:
 	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/build
 .PHONY : fuse/fast
 
-fuse.o: fuse.c.o
+code/fuse.o: code/fuse.c.o
 
-.PHONY : fuse.o
+.PHONY : code/fuse.o
 
 # target to build an object file
-fuse.c.o:
-	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/fuse.c.o
-.PHONY : fuse.c.o
+code/fuse.c.o:
+	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/code/fuse.c.o
+.PHONY : code/fuse.c.o
 
-fuse.i: fuse.c.i
+code/fuse.i: code/fuse.c.i
 
-.PHONY : fuse.i
+.PHONY : code/fuse.i
 
 # target to preprocess a source file
-fuse.c.i:
-	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/fuse.c.i
-.PHONY : fuse.c.i
+code/fuse.c.i:
+	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/code/fuse.c.i
+.PHONY : code/fuse.c.i
 
-fuse.s: fuse.c.s
+code/fuse.s: code/fuse.c.s
 
-.PHONY : fuse.s
+.PHONY : code/fuse.s
 
 # target to generate assembly for a file
-fuse.c.s:
-	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/fuse.c.s
-.PHONY : fuse.c.s
+code/fuse.c.s:
+	$(MAKE) -f CMakeFiles/fuse.dir/build.make CMakeFiles/fuse.dir/code/fuse.c.s
+.PHONY : code/fuse.c.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... fuse"
-	@echo "... fuse.o"
-	@echo "... fuse.i"
-	@echo "... fuse.s"
+	@echo "... code/fuse.o"
+	@echo "... code/fuse.i"
+	@echo "... code/fuse.s"
 .PHONY : help
 
 

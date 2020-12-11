@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/beatriz/FinalProject-OS/fuse.c
+/home/beatriz/FinalProject-OS/code/fuse.c
 fuse.h
 -
 stdio.h
@@ -16,6 +16,20 @@ unistd.h
 sys/types.h
 -
 time.h
+-
+string.h
+-
+stdlib.h
+-
+errno.h
+-
+pthread.h
+-
+main.h
+/home/beatriz/FinalProject-OS/code/main.h
+
+/home/beatriz/FinalProject-OS/code/main.h
+stdio.h
 -
 string.h
 -

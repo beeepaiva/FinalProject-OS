@@ -12,5 +12,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 find_package(FUSE REQUIRED)
 
 include_directories(${FUSE_INCLUDE_DIR})
-add_executable(fuse fuse.c)
+include_directories(${PROJECT_INCLUDE_DIR}/code)
+add_executable(fuse code/fuse.c)
 target_link_libraries(fuse ${FUSE_LIBRARIES})

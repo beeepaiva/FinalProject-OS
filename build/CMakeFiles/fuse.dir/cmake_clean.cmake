@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/fuse.dir/fuse.c.o"
+  "CMakeFiles/fuse.dir/code/fuse.c.o"
   "bin/fuse"
   "bin/fuse.pdb"
 )

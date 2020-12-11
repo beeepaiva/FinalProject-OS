@@ -1,3 +1,0 @@
-/home/beatriz/FinalProject-OS/CMakeFiles/rebuild_cache.dir
-/home/beatriz/FinalProject-OS/CMakeFiles/edit_cache.dir
-/home/beatriz/FinalProject-OS/CMakeFiles/fuse.dir
